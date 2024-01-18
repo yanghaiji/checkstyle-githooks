@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Run Checkstyle before committing
+mvn clean validate checkstyle:check
+
+MVN_RESULT=$?
+
+echo "MVN_RESULT: $MVN_RESULT"
+
+# If Maven Checkstyle fails, prevent the commit
+if [ $MVN_RESULT -ne 0 ]; then
+    echo "Maven Checkstyle failed. Commit aborted."
+	echo "MVN_RESULT: $MVN_RESULT"
+    exit 1
+fi
+
+# If Checkstyle passes and has no warnings, allow the commit
+exit 0
