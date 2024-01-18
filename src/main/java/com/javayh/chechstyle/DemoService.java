@@ -16,9 +16,30 @@ import sun.net.httpserver.HttpServerImpl;
  */
 public class DemoService {
 
+    /**
+     * @param s1                       s1
+     * @param s2                       s2
+     * @param s3                       s3
+     * @param server                   server
+     * @param serializablePermission   serializablePermission
+     * @param scheduledExecutorService scheduledExecutorService
+     */
     public void test(String s1, String s2, String s3, HttpServerImpl server,
                      SerializablePermission serializablePermission, ScheduledExecutorService scheduledExecutorService) {
         String sub = "ww";
+        if (sub.equalsIgnoreCase(s1)) {
+            s1 = s2;
+            if (sub.equalsIgnoreCase(s1)) {
+                if (sub.equalsIgnoreCase(s1)) {
+                    s1 = s2;
+
+                    if (sub.equalsIgnoreCase(s1)) {
+                        s1 = s2;
+
+                    }
+                }
+            }
+        }
     }
 
 
