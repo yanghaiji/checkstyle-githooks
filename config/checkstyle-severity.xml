@@ -1,0 +1,360 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+    <!-- 字符集位utf8 -->
+    <property name="charset" value="UTF-8"/>
+
+    <!-- 设置违规问题的默认严重程度为“警告” error | warning | info -->
+    <property name="severity" value="warning"/>
+
+    <!-- 指定要由Checkstyle处理的文件扩展名（Java、properties和XML文件） -->
+
+    <property name="fileExtensions" value="java, properties, xml , yaml , yml"/>
+    <!-- 排除所有'module-info.java'文件 -->
+    <!-- See https://checkstyle.org/config_filefilters.html -->
+    <module name="BeforeExecutionExclusionFileFilter">
+        <property name="fileNamePattern" value="module\-info\.java$"/>
+    </module>
+    <!-- 检查空白字符 -->
+    <!-- See http://checkstyle.sf.net/config_whitespace.html -->
+    <module name="FileTabCharacter">
+        <property name="eachLine" value="true"/>
+        <property name="severity" value="error"/>
+    </module>
+
+    <module name="LineLength">
+        <property name="max" value="120"/>
+        <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+        <property name="severity" value="error"/>
+    </module>
+
+    <!-- 遍历抽象语法树模块 -->
+    <module name="TreeWalker">
+
+        <!-- 模块：检查外部类型文件名 -->
+        <module name="OuterTypeFilename"/>
+
+        <!-- 模块：检查非法标记文本 -->
+        <module name="IllegalTokenText">
+            <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
+            <property name="format"
+                      value="\\u00(09|0(a|A)|0(c|C)|0(d|D)|22|27|5(C|c))|\\(0(10|11|12|14|15|42|47)|134)"/>
+            <property name="message"
+                      value="Consider using special escape sequence instead of octal value or Unicode escaped value."/>
+        </module>
+
+        <!-- 模块：避免使用转义的Unicode字符 -->
+        <module name="AvoidEscapedUnicodeCharacters">
+            <property name="allowEscapesForControlCharacters" value="true"/>
+            <property name="allowByTailComment" value="true"/>
+            <property name="allowNonPrintableEscapes" value="true"/>
+        </module>
+
+        <!-- 禁止使用通配符导入（例如，import com.example.*;），以确保明确导入需要的类，避免命名冲突和提高代码可读性。 -->
+        <module name="AvoidStarImport"/>
+        <!-- 确保每个文件只包含一个顶级类，以维护代码结构的清晰性和规范性。 -->
+        <module name="OneTopLevelClass"/>
+        <!-- 禁止代码行的换行，以保持代码的紧凑性和可读性。 -->
+        <module name="NoLineWrap"/>
+        <!-- 检查并可能禁止出现空代码块。 -->
+        <module name="EmptyBlock">
+            <!-- 指定代码块为空时的处理选项，这里可能是将其视为文本。 -->
+            <property name="option" value="TEXT"/>
+            <!-- 指定允许出现空代码块的标记类型，例如try、finally、if、else、switch。 -->
+            <property name="tokens"
+                      value="LITERAL_TRY, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH"/>
+        </module>
+        <!-- 检查并强制执行需要花括号的地方，以避免由于缺少花括号而导致的逻辑错误。 -->
+        <module name="NeedBraces"/>
+        <!-- 检查并可能强制执行左花括号的位置。 -->
+        <module name="LeftCurly"/>
+        <!-- 检查并可能强制执行右花括号的位置。 -->
+        <module name="RightCurly">
+            <!-- 指定一个标识，可能用于区分其他模块。 -->
+            <property name="id" value="RightCurlySame"/>
+            <!-- 指定允许在其中使用右花括号的标记类型，例如try、catch、finally、if、else、do。 -->
+            <property name="tokens"
+                      value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE,
+                    LITERAL_DO"/>
+        </module>
+
+        <!-- 检查右花括号的位置。 -->
+        <module name="RightCurly">
+            <!-- 指定一个标识，可能用于区分其他模块。 -->
+            <property name="id" value="RightCurlyAlone"/>
+            <!-- 指定右花括号是否应独立一行，可能是为了增加可读性。 -->
+            <property name="option" value="alone"/>
+            <!-- 指定允许在其中使用右花括号的标记类型，如类定义、方法定义、构造函数定义、for、while循环以及静态和实例初始化块。 -->
+            <property name="tokens"
+                      value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT,
+                    INSTANCE_INIT"/>
+        </module>
+        <!-- 检查代码周围的空格。 -->
+        <module name="WhitespaceAround">
+            <!-- 允许空构造函数周围的空格。 -->
+            <property name="allowEmptyConstructors" value="true"/>
+            <!-- 允许空Lambda表达式周围的空格。 -->
+            <property name="allowEmptyLambdas" value="true"/>
+            <!-- 允许空方法周围的空格。 -->
+            <property name="allowEmptyMethods" value="true"/>
+            <!-- 允许空类型周围的空格。 -->
+            <property name="allowEmptyTypes" value="true"/>
+            <!-- 允许空循环周围的空格。 -->
+            <property name="allowEmptyLoops" value="true"/>
+            <!-- 指定当空块不是多块语句的一部分时，空块只能表示为 '{}'，否则会提示不遵循规范的消息。 -->
+            <message key="ws.notFollowed"
+                     value="WhitespaceAround: ''{0}'' is not followed by whitespace. Empty blocks may only be represented as '{}' when not part of a multi-block statement (4.1.3)"/>
+            <!-- 指定某种元素前未加空格时的提示消息。 -->
+            <message key="ws.notPreceded"
+                     value="WhitespaceAround: ''{0}'' is not preceded with whitespace."/>
+        </module>
+        <!-- 要求每个语句占一行，以提高代码的可读性和维护性。 -->
+        <module name="OneStatementPerLine"/>
+        <!-- 强制要求每个变量声明独占一行，避免在同一行上声明多个变量，以提高代码的可读性。 -->
+        <module name="MultipleVariableDeclarations"/>
+        <!-- 规定数组类型的声明风格，可能涉及数组类型的空格、格式等。 -->
+        <module name="ArrayTypeStyle"/>
+        <!-- 检查switch语句是否包含default分支，以确保完整性。 -->
+        <module name="MissingSwitchDefault"/>
+        <!-- 检查switch语句中是否包含fallthrough注释，以确保程序员明确了解到穿透的情况。 -->
+        <module name="FallThrough"/>
+        <!-- 检查是否使用大写字母L作为长整数的后缀，以确保代码的清晰性。 -->
+        <module name="UpperEll"/>
+        <!-- 规定修饰符的顺序，例如public static final，以确保一致性。 -->
+        <module name="ModifierOrder"/>
+        <!-- 检查代码中空行的使用，允许在字段之间没有空行。 -->
+        <module name="EmptyLineSeparator">
+            <property name="allowNoEmptyLineBetweenFields" value="true"/>
+        </module>
+        <!-- 对特定标记类型（这里是DOT，点号）的分隔符进行换行，以提高代码的可读性。 -->
+
+        <module name="SeparatorWrap">
+            <!-- 指定一个标识，可能用于区分其他模块。 -->
+            <property name="id" value="SeparatorWrapDot"/>
+            <!-- 指定要进行分隔符处理的标记类型，这里是点号。 -->
+            <property name="tokens" value="DOT"/>
+            <!--指定分隔符的处理选项，这里是换行。-->
+            <property name="option" value="nl"/>
+        </module>
+        <!-- 的配置表示针对逗号（,）的分隔符进行换行的规则 -->
+        <module name="SeparatorWrap">
+            <!-- 指定一个标识，可能用于区分其他模块。 -->
+            <property name="id" value="SeparatorWrapComma"/>
+            <!-- 指定要进行分隔符处理的标记类型，这里是逗号。 -->
+            <property name="tokens" value="COMMA"/>
+            <!-- 指定分隔符的处理选项，这里是换行。即，逗号后面应该跟随一个换行符。 -->
+            <property name="option" value="EOL"/>
+        </module>
+        <!-- 特定标记类型的分隔符（省略号和数组声明符号）应如何进行换行 -->
+        <module name="SeparatorWrap">
+            <!-- ELLIPSIS is EOL until https://github.com/google/styleguide/issues/258 -->
+            <!-- 规定省略号（ELLIPSIS）的分隔符在何种情况下进行换行。 -->
+            <property name="id" value="SeparatorWrapEllipsis"/>
+            <!-- 指定要进行分隔符处理的标记类型，这里是省略号。。 -->
+            <property name="tokens" value="ELLIPSIS"/>
+            <!--指定分隔符的处理选项，这里是换行。即，省略号后面应该跟随一个换行符。-->
+            <property name="option" value="EOL"/>
+        </module>
+        <module name="SeparatorWrap">
+            <!-- ARRAY_DECLARATOR is EOL until https://github.com/google/styleguide/issues/259 -->
+            <!-- 规定数组声明符号（ARRAY_DECLARATOR）的分隔符在何种情况下进行换行。 -->
+            <property name="id" value="SeparatorWrapArrayDeclarator"/>
+            <!-- 指定要进行分隔符处理的标记类型，这里是数组声明符号。 -->
+            <property name="tokens" value="ARRAY_DECLARATOR"/>
+            <!-- 指定分隔符的处理选项，这里是换行。即，数组声明符号后面应该跟随一个换行符。 -->
+            <property name="option" value="EOL"/>
+        </module>
+        <module name="SeparatorWrap">
+            <!-- 规定方法引用（METHOD_REF）的分隔符在何种情况下进行换行。 -->
+            <property name="id" value="SeparatorWrapMethodRef"/>
+            <!-- 指定要进行分隔符处理的标记类型，这里是方法引用。 -->
+            <property name="tokens" value="METHOD_REF"/>
+            <!-- 指定分隔符的处理选项，这里是换行。即，方法引用后面应该跟随一个换行符。 -->
+            <property name="option" value="nl"/>
+        </module>
+        <module name="PackageName">
+            <!-- 指定包名的格式，这里要求以小写字母开头，后续可以包含小写字母和数字，用点号分隔。 -->
+            <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
+            <message key="name.invalidPattern"
+                     value="Package name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="TypeName">
+            <message key="name.invalidPattern"
+                     value="Type name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="MemberName">
+            <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9]*$"/>
+            <message key="name.invalidPattern"
+                     value="Member name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <!-- 参数 -->
+        <module name="ParameterName">
+            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+            <message key="name.invalidPattern"
+                     value="Parameter name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="LambdaParameterName">
+            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+            <message key="name.invalidPattern"
+                     value="Lambda parameter name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="CatchParameterName">
+            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+            <message key="name.invalidPattern"
+                     value="Catch parameter name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <!-- 局部变量 -->
+        <module name="LocalVariableName">
+            <property name="tokens" value="VARIABLE_DEF"/>
+            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+            <message key="name.invalidPattern"
+                     value="Local variable name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <!-- 用于定义类类型参数的命名规范 -->
+        <module name="ClassTypeParameterName">
+            <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>
+            <message key="name.invalidPattern"
+                     value="Class type name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="MethodTypeParameterName">
+            <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>
+            <message key="name.invalidPattern"
+                     value="Method type name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="InterfaceTypeParameterName">
+            <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>
+            <message key="name.invalidPattern"
+                     value="Interface type name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <!-- 禁止定义类的finalize()方法，这是因为在 Java 中 finalize() 方法已经被废弃，
+            而使用 try-with-resources 或其他资源管理机制更为推荐。-->
+        <module name="NoFinalizer"/>
+        <!-- 定义了关于泛型代码中空白的规则 -->
+        <module name="GenericWhitespace">
+            <!-- 如果泛型空白后面有空格，将输出相应的消息。 -->
+            <message key="ws.followed"
+                     value="GenericWhitespace ''{0}'' is followed by whitespace."/>
+            <!-- 如果泛型空白前面有空格，将输出相应的消息。 -->
+            <message key="ws.preceded"
+                     value="GenericWhitespace ''{0}'' is preceded with whitespace."/>
+            <!-- 如果泛型空白后面没有空格，将输出相应的消息。 -->
+            <message key="ws.illegalFollow"
+                     value="GenericWhitespace ''{0}'' should followed by whitespace."/>
+            <!-- 如果泛型空白前面没有空格，将输出相应的消息。 -->
+            <message key="ws.notPreceded"
+                     value="GenericWhitespace ''{0}'' is not preceded with whitespace."/>
+        </module>
+        <module name="Indentation">
+            <!-- 指定基本缩进量为4个空格，这是每一级缩进的基本单位。 -->
+            <property name="basicOffset" value="4"/>
+            <!-- 指定花括号缩进的调整量，这个值将添加到花括号所在行的缩进上。 -->
+            <property name="braceAdjustment" value="0"/>
+            <!-- 指定case标签相对于switch的缩进量。 -->
+            <property name="caseIndent" value="4"/>
+            <!-- 指定throws关键字后的异常类型相对于方法声明的缩进量。 -->
+            <property name="throwsIndent" value="8"/>
+            <!-- 指定换行时的额外缩进量，用于对齐新行。 -->
+            <property name="lineWrappingIndentation" value="8"/>
+            <!-- 指定数组初始化元素相对于数组名称的缩进量。 -->
+            <property name="arrayInitIndent" value="4"/>
+        </module>
+        <!-- 检查标识符中缩写是否以单词形式出现，例如是否使用了合适的缩写 -->
+        <module name="AbbreviationAsWordInName">
+            <!-- 指定是否忽略以 "final" 结尾的标识符。 -->
+            <property name="ignoreFinal" value="false"/>
+            <!-- 指定允许的缩写长度，这里是1，即单个字母的缩写。 -->
+            <property name="allowedAbbreviationLength" value="1"/>
+        </module>
+        <!-- 检查同一类中重载方法的声明顺序是否符合规范。 -->
+        <module name="OverloadMethodsDeclarationOrder"/>
+        <!-- 检查变量声明和使用之间的距离，确保可读性。 -->
+        <module name="VariableDeclarationUsageDistance">
+            <!-- 指定允许的变量声明和使用之间的最大行数。 -->
+            <property name="allowedDistance" value="10"/>
+        </module>
+        <!-- 定义自定义的导入顺序规则。 -->
+        <module name="CustomImportOrder">
+            <!-- 指定是否对每个导入分组内的导入进行字母排序 -->
+            <property name="sortImportsInGroupAlphabetically" value="true"/>
+            <!-- 指定是否在导入分组之间插入空行。 -->
+            <property name="separateLineBetweenGroups" value="true"/>
+            <!-- 指定自定义的导入顺序规则，按照静态导入（STATIC）和第三方包（THIRD_PARTY_PACKAGE）的顺序排 -->
+            <property name="customImportOrderRules" value="STATIC###THIRD_PARTY_PACKAGE"/>
+        </module>
+        <!-- 规定方法参数的格式，可能包括参数之间的间隔和括号与参数之间的间隔。 -->
+        <module name="MethodParamPad"/>
+        <module name="NoWhitespaceBefore">
+            <!-- 规定在特定的标记（例如逗号、分号等）之前是否允许空格。 -->
+            <property name="tokens"
+                      value="COMMA, SEMI, POST_INC, POST_DEC, DOT, ELLIPSIS, METHOD_REF"/>
+            <!-- 指定是否允许在这些标记之前有换行符。 -->
+            <property name="allowLineBreaks" value="true"/>
+        </module>
+        <!-- 规定括号周围是否允许空格，以及括号内外的间隔。 -->
+        <module name="ParenPad"/>
+        <!-- 规定运算符是否应该换行 -->
+        <module name="OperatorWrap">
+            <property name="option" value="NL"/>
+            <!-- 指定适用规则的运算符类型。 -->
+            <property name="tokens"
+                      value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR,
+                    LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR, METHOD_REF "/>
+        </module>
+        <module name="AnnotationLocation">
+            <!-- 规定注解的位置，适用于类、接口、枚举、方法和构造函数的定义。 -->
+            <property name="id" value="AnnotationLocationMostCases"/>
+            <property name="tokens"
+                      value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF"/>
+        </module>
+        <module name="AnnotationLocation">
+            <!-- 规定注解在变量定义中的位置。 -->
+            <property name="id" value="AnnotationLocationVariables"/>
+            <property name="tokens" value="VARIABLE_DEF"/>
+            <property name="allowSamelineMultipleAnnotations" value="true"/>
+        </module>
+        <!-- 要求 Javadoc 的 @param、@return、@throws 等标签中的描述部分不能为空。 -->
+        <module name="NonEmptyAtclauseDescription"/>
+        <!-- ：检查 Javadoc 注释的位置是否符合规范，可能涉及类、方法、字段等。-->
+        <module name="InvalidJavadocPosition"/>
+        <!-- 规定 Javadoc 标签的续行缩进规则。 -->
+        <module name="JavadocTagContinuationIndentation"/>
+        <module name="AtclauseOrder">
+            <!-- 规定 Javadoc 注释中 @param、@return、@throws、@deprecated 等标签的顺序 -->
+            <property name="tagOrder" value="@param, @return, @throws, @deprecated"/>
+            <!-- 指定适用规则的标记类型。 -->
+            <property name="target"
+                      value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF"/>
+        </module>
+
+        <!-- 检查公共方法（public）是否缺少 Javadoc 注释。 -->
+        <module name="MissingJavadocMethod">
+            <!-- 指定检查的方法范围，这里是公共方法。 -->
+            <property name="scope" value="public"/>
+            <!-- 指定 Javadoc 注释的最小行数。-->
+            <property name="minLineCount" value="2"/>
+            <!-- 指定允许存在的注解，这里是 Override 和 Test。 -->
+            <property name="allowedAnnotations" value="Override, Test"/>
+        </module>
+        <!-- 检查方法名是否符合指定的格式。-->
+        <module name="MethodName">
+            <!-- 指定方法名的格式规则，这里要求以小写字母开头，后续可以包含小写字母、数字和下划线。-->
+            <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9_]*$"/>
+            <message key="name.invalidPattern"
+                     value="Method name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <!-- 规定 Javadoc 注释是否应该为单行。 -->
+        <module name="SingleLineJavadoc">
+            <!-- 指定是否忽略内联标签。 -->
+            <property name="ignoreInlineTags" value="false"/>
+        </module>
+        <!-- 检查是否存在空的 catch 块。 -->
+        <module name="EmptyCatchBlock">
+            <property name="exceptionVariableName" value="expected"/>
+        </module>
+        <!-- 规定注释的缩进规则。 -->
+        <module name="CommentsIndentation"/>
+    </module>
+</module>
